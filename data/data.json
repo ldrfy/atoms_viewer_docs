@@ -24,6 +24,12 @@
         "size": 0.017
     },
     {
+        "fileName": "graphene_traj.xyz",
+        "label": "graphene_traj.xyz",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/graphene_traj.xyz",
+        "size": 28.297
+    },
+    {
         "fileName": "mos2_cnt.xyz",
         "label": "mos2_cnt.xyz",
         "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/mos2_cnt.xyz",
