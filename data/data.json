@@ -1,0 +1,27 @@
+[
+    {
+        "fileName": "9JIC.pdb",
+        "label": "9JIC.pdb",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/9JIC.pdb"
+    },
+    {
+        "fileName": "graphene.xyz",
+        "label": "graphene.xyz",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/graphene.xyz"
+    },
+    {
+        "fileName": "cnt_breakable.lammpstrj",
+        "label": "cnt_breakable.lammpstrj",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt_breakable.lammpstrj"
+    },
+    {
+        "fileName": "cnt.data",
+        "label": "cnt.data",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt.data"
+    },
+    {
+        "fileName": "mos2_cnt.xyz",
+        "label": "mos2_cnt.xyz",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/mos2_cnt.xyz"
+    }
+]
