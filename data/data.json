@@ -2,26 +2,31 @@
     {
         "fileName": "9JIC.pdb",
         "label": "9JIC.pdb",
-        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/9JIC.pdb"
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/9JIC.pdb",
+        "size": 0.668
     },
     {
         "fileName": "graphene.xyz",
         "label": "graphene.xyz",
-        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/graphene.xyz"
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/graphene.xyz",
+        "size": 0.136
     },
     {
         "fileName": "cnt_breakable.lammpstrj",
         "label": "cnt_breakable.lammpstrj",
-        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt_breakable.lammpstrj"
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt_breakable.lammpstrj",
+        "size": 8.296
     },
     {
         "fileName": "cnt.data",
         "label": "cnt.data",
-        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt.data"
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/cnt.data",
+        "size": 0.017
     },
     {
         "fileName": "mos2_cnt.xyz",
         "label": "mos2_cnt.xyz",
-        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/mos2_cnt.xyz"
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/samples/mos2_cnt.xyz",
+        "size": 0.807
     }
 ]

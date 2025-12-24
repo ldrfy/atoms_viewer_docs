@@ -4,16 +4,19 @@ import os
 
 def get_all_files_json(path_dir, output_json='files.json'):
     """
-    遍历目录 directory 下的所有文件，保存文件名和路径到 JSON
+    遍历目录 path_dir 下的所有文件，保存文件名、路径和大小(KB)到 JSON
     """
     file_list = []
 
     for root, _dirs, files in os.walk(path_dir):
         for f in files:
+            full_path = os.path.join(root, f)
+            size_mb = os.path.getsize(full_path) / 1024 / 1024   # MB
             file_info = {
                 'fileName': f,
-                "label": f,
-                'url': f"https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/{os.path.join(root, f)}"
+                'label': f,
+                'url': f"https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/{full_path.replace(os.sep, '/')}",
+                'size': round(size_mb, 3)  # 保留两位小数
             }
             file_list.append(file_info)
 
