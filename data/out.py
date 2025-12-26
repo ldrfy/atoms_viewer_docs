@@ -16,7 +16,7 @@ def get_all_files_json(path_dir, output_json='files.json'):
             file_info = {
                 'fileName': f,
                 'label': f,
-                'url': f"https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/heads/main/data/{full_path.replace(os.sep, '/')}",
+                'url': f"https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v0.0.1/data/{full_path.replace(os.sep, '/')}",
                 'size': round(size_mb, 3)
             }
             file_list.append(file_info)
