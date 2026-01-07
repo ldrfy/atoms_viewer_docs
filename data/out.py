@@ -2,10 +2,20 @@ import json
 import os
 
 
-def get_all_files_json(path_dir, output_json='files.json'):
+def get_all_files_json(
+    path_dir,
+    output_json='files.json',
+    version='v0.0.1',
+):
     """
     遍历目录 path_dir 下的所有文件，保存文件名、路径和大小(MB)到 JSON，
-    并按文件名排序
+    并按如下规则排序：
+    1. xyz 在最前
+    2. pdb 其次
+    3. 其他格式最后
+    4. 同一类内按体积从小到大
+
+    version: GitHub tag / branch，例如 v0.0.1
     """
     file_list = []
 
@@ -16,13 +26,26 @@ def get_all_files_json(path_dir, output_json='files.json'):
             file_info = {
                 'fileName': f,
                 'label': f,
-                'url': f"https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v0.0.1/data/{full_path.replace(os.sep, '/')}",
+                'url': (
+                    "https://raw.githubusercontent.com/"
+                    f"ldrfy/atoms_viewer_docs/refs/tags/{version}/data/"
+                    f"{full_path.replace(os.sep, '/')}"
+                ),
                 'size': round(size_mb, 3)
             }
             file_list.append(file_info)
 
-    # 按文件名排序（字典序）
-    file_list.sort(key=lambda x: x['fileName'])
+    def sort_key(x):
+        ext = os.path.splitext(x['fileName'])[1].lower()
+        if ext == '.xyz':
+            group = 0
+        elif ext == '.pdb':
+            group = 1
+        else:
+            group = 2
+        return (group, x['size'], x['fileName'])
+
+    file_list.sort(key=sort_key)
 
     with open(output_json, 'w', encoding='utf-8') as f:
         json.dump(file_list, f, ensure_ascii=False, indent=4)
@@ -31,4 +54,4 @@ def get_all_files_json(path_dir, output_json='files.json'):
     return file_list
 
 
-get_all_files_json('samples', 'data.json')
+get_all_files_json('samples', 'data.json', version='v1.0.0')
