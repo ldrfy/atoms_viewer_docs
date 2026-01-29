@@ -1,0 +1,50 @@
+[
+    {
+        "fileName": "cnt_xyz.zip",
+        "label": "cnt_xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_xyz.zip",
+        "size": 0.003
+    },
+    {
+        "fileName": "graphene_xyz.zip",
+        "label": "graphene_xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/graphene_xyz.zip",
+        "size": 0.008
+    },
+    {
+        "fileName": "cnt_graphene_xyz.zip",
+        "label": "cnt_graphene_xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_graphene_xyz.zip",
+        "size": 0.011
+    },
+    {
+        "fileName": "mos2_cnt_xyz.zip",
+        "label": "mos2_cnt_xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/mos2_cnt_xyz.zip",
+        "size": 0.054
+    },
+    {
+        "fileName": "graphene_traj_xyz.zip",
+        "label": "graphene_traj_xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/graphene_traj_xyz.zip",
+        "size": 5.937
+    },
+    {
+        "fileName": "9JIC_pdb.zip",
+        "label": "9JIC_pdb.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/9JIC_pdb.zip",
+        "size": 0.145
+    },
+    {
+        "fileName": "cnt_lammps.zip",
+        "label": "cnt_lammps.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_lammps.zip",
+        "size": 0.004
+    },
+    {
+        "fileName": "cnt_breakable_lammpstrj.zip",
+        "label": "cnt_breakable_lammpstrj.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_breakable_lammpstrj.zip",
+        "size": 3.308
+    }
+]
