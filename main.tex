@@ -1,0 +1,748 @@
+\documentclass[]{ldrbook}
+
+% --- 推荐补充的基础宏包（即使类文件已加载也不冲突） ---
+\usepackage{graphicx}
+\usepackage{float}     % 支持 [H]
+\usepackage{booktabs}  % 支持 \toprule 等
+
+\newcommand{\AppName}{\href{https://ldrfy.github.io/atoms_viewer}{兰朵儿原子查看器}}
+\newcommand{\AppNameEN}{\href{https://ldrfy.github.io/atoms_viewer}{LDR Atoms Viewer}}
+\newcommand{\AppShort}{atoms-viewer}
+\newcommand{\VersionText}{v1.0.0}
+
+% 更稳妥的占位图：label key 与文件名分离
+% 用法：\FigPlaceholder{label-key}{file-or-note}{caption}
+\newcommand{\FigPlaceholder}[3]{%
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.86\linewidth}{\vspace{2.5cm}\centering \textbf{FIG PLACEHOLDER}\\\texttt{#2}\vspace{2.5cm}}}
+\caption{#3}
+\label{fig:#1}
+\end{figure}
+}
+
+\begin{document}
+
+\title{用 \ 户 \ 手 \ 册}
+\titleEn{\AppNameEN}
+\appversion{\VersionText}
+\subtitle{\AppName}
+\author{余航}
+
+\setcoverlogo{imgs/lav.pdf}
+
+\maketitle
+
+\frontmatter
+
+\customcontent
+
+\mainmatter
+
+\chapter{前言}
+本手册面向使用\AppName（\AppNameEN）进行原子结构可视化与分析的科研用户。
+本手册以“快速上手、操作可复现、便于论文出图”为组织原则。
+本手册默认读者了解原子坐标、原子类型与分子动力学轨迹的基本概念。
+本手册描述的功能以\VersionText\ 为准。
+若您的界面文案、按钮位置或截图与本手册略有差异，请以实际界面为准并参考对应章节的操作意图。
+
+\section{软件定位与适用范围}
+\AppName\ 是一款以浏览器端渲染为核心的原子模型查看与轻量分析工具。
+\AppName\ 主要用于加载结构快照与分子动力学轨迹并进行交互式观察、对比与测量。
+\AppName\ 适用于材料模拟、表界面结构、缺陷演化、纳米体系与一般原子级三维可视化场景。
+\AppName\ 的典型输出包括论文插图用PNG、汇报展示用视频与结构对照截图。
+
+\section{运行方式与数据安全}
+\AppName\ 代码开源，可根据自己需要进行修改，源代码地址为 \url{https://github.com/ldrfy/atoms_viewer}。
+可通过访问网站 \url{https://ldrfy.github.io/atoms_viewer} 直接使用。
+在用户使用中，所有过程完全在本地计算，并在本机完成解析与渲染。
+您可以在浏览器中直接加载本地文件而无需上传到服务器，模型文件不会被发送到任何网络端点。
+当您需要共享时，建议导出图片或视频而非直接共享原始数据文件。
+
+\section{软硬件环境建议}
+\AppName\ 推荐在支持WebGL的现代浏览器中运行。
+\AppName\ 推荐使用 Firefox、Chrome、Edge 等主流浏览器以获得更稳定的WebGL与视频编码支持。
+当您处理百万级原子或长轨迹时，建议使用具备独立显卡与充足内存的计算机。
+当您在笔记本等轻量设备上使用时，建议降低可见图层数量并避免高倍率导出。
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        项目  & 建议配置                   & 说明             \\
+        \midrule
+        浏览器 & Firefox/Chrome/Edge最新版 & 支持WebGL与常见视频编码 \\
+        处理器 & 4核及以上                  & 解析与重建主要消耗CPU   \\
+        内存  & 16GB及以上                & 多帧轨迹与多图层占用明显   \\
+        显卡  & 独立显卡优先                 & 大规模点渲染更流畅      \\
+        \bottomrule
+    \end{tabular}
+    \caption{运行环境建议。}
+    \label{tab:env}
+\end{table}
+
+\section{本手册的结构}
+本手册第\ref{ch:overview}章给出功能全景与推荐工作流。
+本手册第\ref{ch:io}章解释文件导入、格式识别与多图层管理。
+本手册第\ref{ch:appearance}章解释按图层独立的配色与外观参数以及一键同步策略。
+本手册第\ref{ch:view}章解释双视图、交互旋转缩放与精确视角控制。
+本手册第\ref{ch:analysis}章解释原子拾取、选择同步与几何测量。
+本手册第\ref{ch:play}章解释多帧播放、轨迹回放与过程录制。
+本手册第\ref{ch:export}章解释PNG导出、透明背景与自动裁切。
+本手册第\ref{ch:ui}章解释语言、主题与偏好设置。
+本手册第\ref{ch:perf}章解释大文件策略与性能调优建议。
+本手册第\ref{ch:faq}章收录常见问题与排查清单。
+
+\chapter{功能总览}\label{ch:overview}
+\section{您可以用它做什么}
+\AppName\ 支持从常见结构与分子动力学文件中加载原子模型并进行交互式查看。
+\AppName\ 支持一次打开多个文件并以多图层方式叠加显示以便进行对比分析。
+\AppName\ 支持双视图联动以同时对照正视图、侧视图与俯视图中的任意两个。
+\AppName\ 支持选中单个或多个原子并查看类型、编号与三维坐标等信息。
+\AppName\ 支持对选中的原子计算距离与夹角等几何量以辅助结构分析。
+\AppName\ 支持多帧轨迹播放以观察分子动力学演化过程。
+\AppName\ 支持导出PNG图片并支持纯色背景、透明背景与自动裁切以减少空白区域。
+\AppName\ 支持将轨迹播放或模型旋转过程录制为视频以便展示与分享。
+\AppName\ 支持深色与浅色主题并提供简洁的科研友好界面。
+\AppName\ 支持多语言界面并可根据系统语言自动切换默认语言。
+
+\section{10分钟快速上手}
+\begin{enumerate}
+    \item 打开网页或本地构建版本，点击“选择文件”或拖入XYZ/PDB/LAMMPS文件；也可在空白页点击“加载样例”。
+    \item 在“模型图层”面板确认已加载的文件，并切换要编辑的“当前图层”。
+    \item 如为LAMMPS类型，进入“LAMMPS”填写 typeid 对应的元素并点击“刷新显示”。
+    \item 在“原子颜色”与“图层外观”调节配色、原子大小、键显示与细分度；需要统一风格时开启“同时修改所有图层”。
+    \item 使用鼠标旋转/缩放/平移，或在“显示控制”中输入精确的XYZ角度与视距；勾选两个视角即可进入双视图。
+    \item 选择多帧数据时，左下角播放条支持播放/暂停、帧定位与播放FPS设置；可导出PNG或录制视频。
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/setting_split.jpg}
+    \caption{主界面总览：主画布、多视角与设置面板。}
+    \label{fig:ui-overview}
+\end{figure}
+
+\section{典型工作流}
+
+\begin{itemize}
+    \item 第一步是通过“打开文件”或拖拽文件进入窗口来加载一个或多个模型数据文件。
+    \item 第二步是检查右侧设置面板中的解析结果并在需要时完成LAMMPS类型映射配置。
+    \item 第三步是使用鼠标交互或数值输入调整视角并在双视图中对照关键方向与投影关系。
+    \item 第四步是通过点击选中原子并读取信息或执行距离与角度等几何测量。
+    \item 第五步是根据需要播放多帧轨迹并在关键时刻暂停以进行对比与记录。
+    \item 第六步是导出透明或指定背景的PNG图片或录制视频并用于论文、报告或汇报。
+\end{itemize}
+
+\section{界面组成与核心概念}
+
+主画布区域用于渲染模型并承载旋转、缩放、平移与拾取交互。
+右侧设置面板用于文件、图层、视图、显示、播放与导出等功能的集中配置。
+顶部或角落的状态提示用于显示加载进度、错误信息与用户操作反馈。
+顶部栏提供语言、主题、GitHub链接与设置入口；移动端以菜单形式收纳。
+左下角的播放/录制条用于多帧播放、背景色设置与录制控制。
+当开启双视图时，主画布区域会被分割为两个视口并可进行联动交互。
+当同时加载多个文件时，每个文件对应一个图层并可独立控制可见性、删除操作、LAMMPS映射关系。
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lp{0.56\linewidth}}
+        \toprule
+        区域       & 作用说明                               \\
+        \midrule
+        主画布      & 模型渲染、旋转/缩放/平移、拾取与测量的主要区域。          \\
+        图层面板     & 管理已加载的文件，切换活动图层、显示/隐藏、删除。          \\
+        LAMMPS映射 & 按图层维护 typeid$\to$元素映射，映射后点击“刷新显示”。 \\
+        原子颜色     & 按图层维护颜色映射，支持“同时编辑所有图层”一键同步。        \\
+        图层外观     & 按图层维护原子大小、键显示、球体细分、键长阈值，可一键同步。     \\
+        视图/显示    & 单视图/双视图切换、XYZ旋转角与视距输入、背景色与主题。      \\
+        播放/录制控件  & 左下角播放条用于多帧播放与帧定位，可录制视频；切换图层显示后仍保留。 \\
+        导出       & PNG导出（支持透明与自动裁剪）、视频录制设置。           \\
+        \bottomrule
+    \end{tabular}
+    \caption{界面主要区域及其职责。}
+    \label{tab:ui-areas}
+\end{table}
+
+\section{术语约定与状态提示}
+为避免歧义，本手册约定以下常用术语。
+“当前图层”指当前被编辑显示参数的图层；
+“活动图层”指当前用于拾取、测量与状态显示的图层；
+“可见图层”指当前被勾选显示的图层集合。
+顶部或角落的状态提示会在加载、重建与导出时给出进度或错误信息。
+当操作未生效时，请优先查看状态提示是否仍处于“解析/重建/导出中”。
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lp{0.64\linewidth}}
+        \toprule
+        术语      & 说明                        \\
+        \midrule
+        当前图层    & 当前面板参数对应的图层，影响颜色与外观等编辑结果。 \\
+        活动图层    & 拾取、测量与信息面板显示所依据的图层。       \\
+        可见图层    & 在画布中实际显示的图层集合，导出时以此为准。    \\
+        重建/刷新显示 & 根据最新映射与外观参数重新生成当前图层模型。    \\
+        \bottomrule
+    \end{tabular}
+    \caption{常用术语与界面状态说明。}
+    \label{tab:terms}
+\end{table}
+
+\chapter{文件与数据管理}\label{ch:io}
+
+\section{打开文件与拖拽加载}
+
+您可以点击“打开文件”在文件对话框中选择一个或多个文件。
+您也可以将一个或多个文件直接拖拽到窗口中触发加载。
+当一次加载多个文件时，系统会以多图层方式追加显示而不会覆盖已有图层。
+当您希望替换当前工作集时，可以先删除不再需要的图层或隐藏旧图层再加载新数据。
+当文件很大时，首次解析可能需要数秒到数十秒并取决于硬件与浏览器。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/page_empty.jpg}
+    \caption{通过文件对话框或拖拽加载一个或多个模型文件。}
+    \label{fig:io-open}
+\end{figure}
+
+\section{支持的文件格式与识别策略}
+
+\AppName\ 支持多种结构与轨迹文件并提供自动识别与手动指定两种路径。
+当文件扩展名明确时，系统会优先按扩展名选择解析器。
+当扩展名不明确或内容存在变体时，系统会通过文件头部与关键段落进行嗅探识别。
+当自动识别失败或识别不符合预期时，您可以在“导出/解析”面板中手动指定格式并重新解析。
+解析信息区会显示格式、文件名、原子数与帧数，便于快速核对加载是否正确。
+加载多个文件时，默认按“新文件覆盖旧文件的可见性”策略：新文件加载后会将旧图层暂时隐藏，避免视觉混乱；您可以随时重新开启旧图层。
+
+\subsection{格式列表}
+当前版本支持至少如下格式。
+XYZ适合轻量结构展示，可包含多帧数据。一般来说，第一行为当前帧原子数目，第二行为注释信息，第三行及以后为原子类型与坐标数据，每一行对应一个原子，第一列为原子类型（元素符号或自定义标签），后续三列为X、Y、Z坐标，支持多帧时每帧数据按上述格式依次排列。
+
+
+对于LAMMPS结构文件，支持LAMMPS-data与LAMMPS-dump两种变体，如果不包含原子类型信息，可在设置中选择typeid对应的原子类型。
+LAMMPS-data为LAMMPS中 \href{https://docs.lammps.org/read_data.html}{read\_data} 可读取或 \href{https://docs.lammps.org/write_data.html}{write\_data}，支持 Atom Type Labels 段落解析原子类型。
+LAMMPS-dump为LAMMPS模拟时使用dump命令输出的数据，需包含id和type字段以方便排序和映射，另坐标字段推荐输出x/y/z或xu/yu/zu，适合轨迹输出并可包含多帧与其他自定义列字段。
+
+
+PDB适合生物分子结构并包含残基与链等扩展信息，可在 \url{https://www.rcsb.org/} 下载蛋白质结构数据直接使用。
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        格式          & 典型扩展名            & 主要用途                                           \\
+        \midrule
+        XYZ         & .xyz             & {\small 结构快照与轻量交换或多帧轨迹}                        \\
+        LAMMPS-data & .data,.lmp       & {\small LAMMPS中read\_data可读取或write\_data输出的数据} \\
+        LAMMPS-dump & .dump,.lammpstrj & {\small LAMMPS中dump输出的数据，多帧轨迹}                 \\
+        PDB         & .pdb             & {\small 生物分子结构与注释信息}                           \\
+        \bottomrule
+    \end{tabular}
+    \caption{支持的文件格式与典型用途。}
+    \label{tab:formats}
+\end{table}
+
+\section{导入前的自检清单}
+为减少解析失败与显示异常，建议在导入前进行简单自检。
+\begin{itemize}
+    \item 确认文件扩展名与内容一致，避免将dump误标为data或XYZ。
+    \item 确认原子数与行数一致，XYZ多帧需要每帧结构完整。
+    \item LAMMPS-dump建议包含id与type列，并保证id连续或可排序。
+    \item 对于含空格或中文的文件名，建议在导入前先简化命名以减少兼容性风险。
+    \item 当多文件对比时，建议提前统一坐标系方向或记录坐标变换关系。
+\end{itemize}
+
+\section{多图层管理与对比分析}
+
+
+多图层用于同时显示多个模型以进行对比、叠加与差异观察。如图 \ref{fig:layers-panel} 所示，
+每个图层对应一次文件载入的结果并在图层面板中以名称或文件名标识。
+您可以对每个图层独立设置可见性以突出目标结构或进行逐层排查。
+您可以删除不再需要的图层以释放内存与显存并保持画面整洁。
+当您导出图片或录制视频时，输出内容以当前可见图层为准。
+当您进行拾取与测量时，操作对象通常为当前活动图层并由界面提示当前图层状态。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/setting_tucheng.jpg}
+    \caption{图层面板：图层名称、可见性开关与删除操作。}
+    \label{fig:layers-panel}
+\end{figure}
+
+\section{LAMMPS类型映射的意义}
+
+LAMMPS文件常用数值 typeid 表示原子类型而不直接携带元素符号。如图 \ref{fig:lammps-mapping} 所示，
+为了得到合理的颜色、半径、图例与可读的类型信息，您需要将 typeid 映射为元素或自定义类型名。
+当同一工程同时加载多个 LAMMPS 模型时，不同文件对相同 typeid 的含义可能不同。
+例如一个模型可能使用1表示Mo而另一个模型使用1表示C。
+为避免映射冲突，\AppName\ 将 LAMMPS 映射按图层独立管理并互不影响。
+
+\section{按图层管理的LAMMPS映射与当前图层提示}
+
+\AppName\ 会在每个图层载入后读取该图层中出现过的 typeid 集合。
+\AppName\ 会在该图层的映射表中自动补齐缺失的 typeid 行以便逐行选择元素符号。
+LAMMPS设置区域会显示“当前对应图层”的名称以提示您正在编辑哪一个图层的映射。
+当您切换活动图层时，LAMMPS映射表会随之切换到该图层的映射内容。
+不同图层的映射表相互独立并不会因为修改某一层而影响其他层的显示。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/setting_tucheng_lammps.jpg}
+    \caption{LAMMPS 类型映射：当前图层提示、 typeid --元素对应表与“刷新显示”。}
+    \label{fig:lammps-mapping}
+\end{figure}
+
+\section{映射编辑、刷新显示与重建策略}
+
+当您修改映射或调整 typeid 时，系统不会立即重建模型以避免输入过程中卡顿。
+当您完成映射后，请点击“刷新显示”以应用映射并重新构建当前图层的可视化。
+刷新显示只会重建当前对应图层并不会触发其他图层的重建。
+当刷新显示触发重建时，界面会显示加载动画并在完成后自动结束。
+若您发现元素颜色或半径未更新，请确认已点击刷新显示且当前图层指示正确。
+
+\section{大文件与多帧数据的加载建议}
+
+当单帧原子数接近百万时，解析耗时与显存占用会显著增加。
+建议优先隐藏不必要图层并避免在大数据场景下同时显示过多叠加对象。
+建议在多帧轨迹中按需播放并降低帧率以减小实时压力。
+当浏览器提示页面无响应时，通常意味着主线程正在进行密集解析或重建。
+您可以尝试减少同时可见图层数量或删除不必要图层以恢复交互流畅性。
+
+\chapter{图层外观与配色}\label{ch:appearance}
+\section{图层独立与当前图层提示}
+\AppName\ 在颜色、键线、原子大小等显示参数上采用“按图层独立”的设计。
+右侧设置面板的“原子颜色”和“图层外观”区域会显示“当前图层”名称，保证您清楚正在编辑哪一层。
+当您切换活动图层时，这两块区域会自动切换到对应图层的参数。
+面板提供“同时编辑所有图层”开关，可在需要时将当前修改广播到全部图层，便于统一风格。
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/tucheng_gh_cnt.jpg}
+    \caption{多图层编辑与分别显示。}
+    \label{fig:tc-gh_cnt}
+\end{figure}
+
+\section{原子颜色映射与即时应用}
+每个图层拥有独立的颜色映射表，既支持元素直接映射，也支持 typeid+元素的组合映射（如 C1、O2）。
+您可以为任意行输入十六进制颜色或通过色盘选择，并支持恢复到内置默认颜色。
+颜色修改会在短暂刷新后应用到当前图层，若开启“同时编辑所有图层”，会同步应用到所有图层。
+当同一元素在不同 typeid 下需要不同颜色时，可在映射表中分别设置。
+图层间互不覆盖，避免跨文件的颜色冲突；需要统一配色时请打开同步开关后再调整。
+
+\section{图层外观参数：原子大小、键线与质量}
+“图层外观”面板提供按图层独立保存的显示参数：
+\begin{itemize}
+    \item 原子大小（atom size）：整体缩放原子球半径，适合对比密度或突出关键位点。
+    \item 键显示开关：控制当前图层是否渲染键；关闭可显著提升性能。
+    \item 键长阈值系数（bondFactor）：调节自动推断键的截断距离，数值越大越易生成键。
+    \item 球体细分（Sphere Segments）：控制球体平滑度，数值越高越精细但开销更大。
+    \item 键线半径（bond radius）：控制键线粗细，适合在高分辨率出图时增强可读性。
+\end{itemize}
+通过减小原子大小并适当增大键线半径，可实现类似“棍棒模型”的显示效果，便于突出键连接关系。
+所有参数默认随图层独立保存；当您希望多图层保持一致外观时，可开启“同时编辑所有图层”后调整。
+
+\section{刷新与一致性}
+颜色修改会即时更新当前图层的原子与键颜色；外观参数调整也实时生效。
+LAMMPS 类型映射与颜色、外观均按图层隔离，确保不同文件的 typeid 不会互相干扰。
+建议在多文件对比时，先逐层确认映射，再按需开启“同时编辑所有图层”统一配色与外观。
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.49\linewidth]{imgs/lav/tucheng_gh.jpg}
+    \includegraphics[width=0.49\linewidth]{imgs/lav/tucheng_cnt.jpg}
+    \caption{多图层分别设置原子颜色与大小等外观}
+    \label{fig:tc-gh_cnt}
+\end{figure}
+
+\chapter{视图与交互}\label{ch:view}
+
+\section{单视图与双视图的基本概念}
+
+单视图模式用于专注查看一个视角并最大化画布空间。
+双视图模式用于同时对照两个正交或互补方向以快速理解三维结构。
+双视图常用于核对层状材料厚度方向、晶体取向与缺陷在不同投影下的形态。
+双视图也适合在对比两个图层时保持相同姿态以减少视觉误差。
+
+\section{双视图的开启、视图类型与布局比例}
+
+您可以在“显示控制”中勾选两个视角进入双视图。如图 \ref{fig:split-view} 所示，
+两个视图会左右并排显示，并可在正视图、侧视图、俯视图中任意组合。
+您可以调整两个视图之间的比例以便为某一个视图保留更大面积。
+您也可以关闭双视图以回到单视图观察并获得更大显示区域。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/setting_split.jpg}
+    \caption{双视图设置：分屏方向、视图类型与比例调节。}
+    \label{fig:split-view}
+\end{figure}
+
+\section{联动交互与同步策略}
+
+双视图支持同步旋转与同步缩放以保证两个投影一致变化。
+双视图支持同步选中原子以便您在另一个投影中核对同一组原子。
+当您在一个视图中旋转模型时，另一个视图会实时反映相同的姿态变化。
+当您在一个视图中缩放或平移时，另一个视图会按相同策略更新视距与位置。
+双视图为联动视角，若需要独立调整建议暂时切回单视图。
+
+\section{鼠标与触控的基本操作}
+
+滚轮用于缩放并改变视距以实现远近观察。
+按住鼠标左键拖拽用于旋转模型以改变观察方向。
+按住鼠标右键或中键拖拽用于平移视野以对齐目标区域。
+触控设备通常支持单指旋转与双指缩放并与鼠标操作保持一致意图。
+当您发现旋转不够顺滑时，请检查是否同时开启了过多实时计算或正在进行轨迹播放。
+旋转模型或改变模型大小时，设置面板中的视距与XYZ旋转角数值会同步更新以反映当前状态。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/setting_rot_xyz.jpg}
+    \caption{视角控制：XYZ 旋转角、预设视角与“恢复原始视距”。}
+    \label{fig:view-controls}
+\end{figure}
+
+\section{精确视角控制与数值输入}
+
+您可以通过数值输入直接设置XYZ旋转角度以获得可复现的视角。
+您可以通过数值输入直接设置视距以实现多次对比时一致的缩放程度。
+数值输入适合论文制图与对齐不同数据集时的精确控制。
+交互旋转适合探索与快速定位结构特征。
+建议在探索阶段使用鼠标交互并在定稿阶段使用数值输入锁定视角。
+您可通过“是否透视”切换透视/正交投影，以更好展示对齐关系。
+
+\section{恢复原始视距与预设视角}
+
+当您在多次缩放后迷失尺度时，可以使用“恢复原始视距”一键回到初始fit视距。
+恢复原始视距不会改变您当前的模型姿态与旋转角度。
+您可以配合预设视角功能快速切换到正视、侧视或俯视等标准方向。
+“回到旋转前”可将XYZ旋转角恢复到初始值，便于撤销过度旋转。
+当您调整一个图层的视角或视距时，其他图层的模型视角同步变化，以减少模型间对比的操作。
+
+\section{视角复现与出图一致性建议}
+为获得可复现的视角与一致的出图风格，建议按以下流程操作：
+\begin{itemize}
+    \item 先使用交互旋转找到目标视角，再记录XYZ旋转角与视距数值。
+    \item 使用“恢复原始视距”统一尺度，再微调至所需视距。
+    \item 多图层对比时先统一视角，再逐层检查映射与外观。
+    \item 出图前确认背景色、光照与是否透视保持一致。
+\end{itemize}
+
+
+\section{原子颜色自定义}
+
+每种原子内置了一种颜色，但您可以在“原子颜色”面板为特定元素或“元素+typeid”组合指定自定义颜色。
+对于LAMMPS类型，请先完成 typeid 到元素符号的映射，再为不同 typeid 分别指定颜色。
+若希望统一所有图层的配色，可开启“同时编辑所有图层”后修改；默认情况下颜色仅作用于当前图层。
+当需要恢复默认颜色时，可点击单行的“恢复默认”或清除自定义，颜色会即时回退。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.49\linewidth]{imgs/lav/atoms_color0.jpg}
+    \includegraphics[width=0.49\linewidth]{imgs/lav/atoms_color.jpg}
+    \caption{原子颜色自定义与同一种原子不同分组自定义。}
+    \label{fig:atoms-color}
+\end{figure}
+
+
+
+\section{其他设置}
+
+“其他设置”包含跨图层的通用选项，如显示坐标轴、播放时是否逐帧重建键线、录制帧率与主题可读性提示等。
+原子大小、键显示、球体细分与键长阈值已移动到“图层外观”面板并按图层独立保存。
+当您处理大规模原子模型时，建议在“图层外观”中关闭键线或降低球体细分以提升渲染性能；
+在导出高质量图片时，再提高细分或导出倍率以获得更平滑的边缘。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/pc_setting.jpg}
+    \caption{其他设置。}
+    \label{fig:settings-other}
+\end{figure}
+
+\chapter{分析与测量}\label{ch:analysis}
+
+\section{原子拾取与信息查看}
+
+您可以通过点击原子来选中并在信息面板中查看其类型与坐标。
+信息面板通常会显示元素符号或 typeid 以及三维坐标等关键字段。
+当数据包含帧索引时，您也可以看到当前帧号以辅助时序分析。
+当您在双视图中选中原子时，另一个视图会同步高亮以便定位。
+当您在多图层场景中拾取时，结果以当前活动图层为准并由界面提示活动图层。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/pc_select.jpg}
+    \caption{原子拾取：点击选中后在信息面板显示类型与坐标，并在视图中高亮。}
+    \label{fig:atom-pick}
+\end{figure}
+
+\section{多原子选择与几何量计算}
+
+您可以连续点击选择多个原子以构建测量所需的点集；也可开启测量模式，或在点击时按住Shift/Ctrl/Command实现多选。
+当您选择两个原子时，系统可以计算它们之间的距离以作为键长或最近邻距离。
+当您选择三个原子时，系统可以计算夹角以分析键角或局域构型。
+当您需要测量多个位置时，建议在测量完成后清空选择以避免混淆。
+当您处理周期性体系时，请注意当前测量是否考虑周期边界条件的最短像约定。
+当您需要严格的周期最短像测量时，建议结合模拟盒信息与专业后处理工具进行复核。
+
+\section{选中同步与结构对照}
+
+在双视图中，同步选中可以帮助您从不同投影确认同一结构单元。
+在多图层中，建议通过“仅显示目标图层”来减少拾取歧义并提升测量可靠性。
+当您需要跨图层对比同一位置时，建议先统一视角与缩放并再逐层核查。
+
+\chapter{多帧播放与录制}\label{ch:play}
+
+\section{多帧数据的概念}
+
+多帧数据用于表示随时间演化的一系列原子坐标快照。
+LAMMPS-dump与XYZ多帧数据可携带多帧信息并用于分子动力学轨迹回放。
+当帧数很大时，建议分段加载或降低播放设置以提升响应性。
+当您只关注特定时间窗口时，建议在播放控件中定位并围绕关键帧进行测量与导出。
+
+\section{播放控制与帧范围}
+
+您可以通过播放控件开始、暂停与拖动进度条以定位到指定帧。
+您可以设置播放FPS以在流畅性与精度之间权衡，并可直接输入帧序号跳转。
+播放控件固定在画面左下角，切换图层可见性或隐藏/显示模型后仍可继续控制轨迹播放。
+当您观察相变或缺陷迁移时，建议在关键时刻暂停并使用测量工具量化变化。
+当播放导致交互延迟明显时，建议隐藏部分图层或降低画面复杂度。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/page_play.jpg}
+    \caption{轨迹播放：播放/暂停、帧进度定位与速度设置。}
+    \label{fig:play-controls}
+\end{figure}
+
+\section{帧重建与性能提示}
+播放时可选择“逐帧刷新键线”，用于需要实时更新键连接的场景；关闭后可显著提升大型轨迹的播放流畅度。
+当帧数很大时，拖动进度条会自动限速以避免UI卡顿；必要时可降低播放FPS或仅导出关键帧图片。
+
+
+\section{录制轨迹与旋转过程为视频}
+
+您可以将轨迹播放过程录制为视频以便用于汇报与展示。
+点击录制后，画布上会出现框选提示，拖拽绘制录制区域并可移动或拉伸微调，确认后开始录制。
+录制FPS由“其他设置”中的“录制帧率”控制，背景色可在播放条中设置。
+录制过程中可暂停/恢复；结束后将下载WebM视频文件。
+当您需要更小体积的输出时，建议缩小录制区域、降低录制帧率或缩短录制区间。
+轨迹播放过程或静态模型的旋转都会被录制，从而展示三维结构细节。
+如需在不支持WebM的场景中播放，可使用视频转码工具转换为MP4等格式。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\linewidth]{imgs/lav/page_record.jpg}\\
+    \includegraphics[width=0.49\linewidth]{imgs/lav/page_recording0.jpg}
+    \includegraphics[width=0.49\linewidth]{imgs/lav/page_recording.jpg}
+    \caption{录制功能：旋转录制参数设置、录制倒计时与录制中状态提示。}
+    \label{fig:recording}
+\end{figure}
+
+\chapter{导出与分享}\label{ch:export}
+
+\section{PNG导出与背景设置}
+
+您可以将当前视图导出为PNG图片用于论文、海报与报告。
+您可以选择导出背景为您指定的纯色以适配论文白底或深色展示环境。
+但是更推荐您选择透明背景以便后期叠加到其他背景或排版模板。
+当选择透明背景时，系统会根据可见原子自动裁切，减少周围无效空白区域。
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.65\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/lav/page_export_png.jpg}
+    \end{minipage}\hfill
+    \begin{minipage}{0.33\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imgs/lav/export_png.jpg}
+    \end{minipage}
+    \caption{PNG 导出：参数面板（左）与结果预览（右），包含背景设置与自动裁切选项。}
+    \label{fig:export-png}
+\end{figure}
+
+\section{导出分辨率与缩放倍率}
+
+您可以通过缩放倍率提高导出PNG的分辨率以获得更细腻的边缘效果。
+更高的导出倍率会增加渲染耗时并可能提高显存占用，并且可能导致输出错误，具体与您的电脑性能相关。
+建议在定稿阶段使用较高倍率而在预览阶段使用默认倍率。
+当您发现导出耗时过长时，可以降低倍率，或使用更高性能以及具备高性能独立显卡的电脑。
+当设备GPU最大尺寸有限时，系统会自动降低过高的导出倍率并给出提示。
+
+\section{导出前检查清单}
+在导出PNG或视频前，建议做一次快速确认以减少返工：
+\begin{itemize}
+    \item 当前视角是否锁定，XYZ角度与视距是否符合预期。
+    \item 只保留需要出图的可见图层，避免无关图层影响裁切范围。
+    \item 确认背景色与透明选项是否符合论文或汇报排版要求。
+    \item 如需多张图一致，确保已统一外观参数与配色。
+\end{itemize}
+
+\section{双视图导出策略}
+
+当您处于双视图模式时，导出图片将按当前布局输出两视图的组合图。
+您可以通过调整双视图比例使导出结果更符合排版需求。
+如果您只需要其中一个视图，建议先切换到单视图再导出。
+当您需要在论文中并排展示两个投影时，双视图导出可以显著提高出图效率与一致性。
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\linewidth]{imgs/lav/page_export_png_2.jpg}
+    \vspace{1em}
+    \rule{0.9\linewidth}{0.4pt}
+    \vspace{1em}
+    \includegraphics[width=\linewidth]{imgs/lav/export_png_2.jpg}
+    \caption{PNG 导出：双视图导出设置与透明背景自动裁剪后的导出结果。}
+    \label{fig:export-png-2}
+\end{figure}
+
+
+\section{视频导出与分享建议}
+
+视频导出适合用于组会汇报、线上演示与项目说明。
+建议为视频选择稳定的背景、适度的分辨率与合适的帧率，以兼顾质量、体积与流畅度。
+建议在视频中展示关键帧区间并避免过长的无变化片段。
+当视频用于论文补充材料时，建议保留版本号与数据来源信息以便追溯。
+
+\chapter{个性化与系统设置}\label{ch:ui}
+
+\section{多语言与自动切换}
+
+\AppName\ 提供多语言界面以适配不同地区的科研用户。
+\AppName\ 可根据系统语言自动切换默认界面语言。
+您也可以在顶部栏（或移动端菜单）手动选择语言以覆盖系统自动选择。
+当您在跨团队协作中共享截图时，建议统一语言以减少沟通成本。
+当语言切换后，设置面板与提示文案会即时更新而不影响模型数据本身。
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.49\textwidth}\centering
+        \includegraphics[width=\linewidth]{imgs/lav/page_empty.jpg}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}\centering
+        \includegraphics[width=\linewidth]{imgs/lav/languae_en_home.jpg}
+    \end{minipage}
+
+    \vspace{0.6em}
+
+    \begin{minipage}{0.49\textwidth}\centering
+        \includegraphics[width=\linewidth]{imgs/lav/setting_tucheng.jpg}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}\centering
+        \includegraphics[width=\linewidth]{imgs/lav/theme_light_en.jpg}
+    \end{minipage}
+    \caption{界面语言切换与浅色主题示例：中文与英文界面，以及浅色主题在不同语言下的显示。}
+    \label{fig:lang-theme-samples}
+\end{figure}
+
+\section{深色与浅色主题}
+
+\AppName\ 支持深色与浅色主题以适配不同光照环境与个人偏好。
+深色主题适合长时间观察并可降低屏幕眩光。
+浅色主题适合论文截图并与浅色文档背景保持一致。
+主题切换不会改变模型数据、映射表与测量结果。
+当背景色与主题对比度过低时，系统会给出可读性提示，可在“其他设置”中关闭。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.49\linewidth]{imgs/lav/theme_dark.jpg}
+    \includegraphics[width=0.49\linewidth]{imgs/lav/setting_tucheng.jpg}
+    \caption{主题切换：深色主题（左）与浅色主题（右）。}
+    \label{fig:theme-compare}
+\end{figure}
+
+\section{科研友好界面与扩展性}
+
+\AppName\ 的界面设计强调低干扰与高信息密度之间的平衡。
+常用操作集中在右侧设置面板并按“文件与图层、视图、显示、播放、导出”逻辑分组，并且使用半透明磨砂质感，以减少面板对模型的干扰。
+工程采用模块化结构以便未来扩展新的渲染样式、分析工具与文件格式。
+当您需要更复杂的后处理时，建议将\AppName\ 作为快速可视化与出图工具并与专业分析软件配合使用。
+\AppName\ 在 Windows、Linux、Android 与 macOS 的主流浏览器上均可运行；移动端自动切换为单列布局并支持触控操作。
+如图 \ref{fig:pc-phone} 所示，手机与电脑端界面保持一致的功能与风格，设置面板与检查面板纵向排列且可调高度，便于在有限屏幕上操作。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.77\linewidth]{imgs/lav/pc_theme.jpg}
+    \includegraphics[width=0.2\linewidth]{imgs/lav/phone_theme.jpg}\\
+    \includegraphics[width=0.77\linewidth]{imgs/lav/pc_select.jpg}
+    \includegraphics[width=0.2\linewidth]{imgs/lav/phone_select.jpg}\\
+    \includegraphics[width=0.77\linewidth]{imgs/lav/pc_setting.jpg}
+    \includegraphics[width=0.2\linewidth]{imgs/lav/phone_setting.jpg}
+    \caption{手机与电脑端同步适配。}
+    \label{fig:pc-phone}
+\end{figure}
+\section{本地计算与隐私}
+\AppName\ 数据解析与渲染过程完全在本地进行，避免上传数据。
+该设计更适用于包含未发表结果或敏感参数的科研数据场景。
+当您需要共享时，建议仅输出图片或视频并在必要时进行脱敏与裁剪。
+
+\section{本地设置保存与清理}
+为提高工作效率，\AppName\ 会将常用设置保存在本地浏览器中，例如视角、主题与部分显示参数。
+当您发现设置异常或与预期不同步时，可在设置面板中选择“清理本地设置”以恢复默认状态。
+您也可以导出当前设置为JSON文件，或通过导入设置在不同设备之间迁移参数。
+清理仅影响本地配置，不会修改或删除您的模型文件。
+
+\chapter{性能与大规模数据}\label{ch:perf}
+\section{性能的主要影响因素}
+原子数、帧数与同时可见图层数是影响性能的三大核心因素。
+导出倍率、抗锯齿与辅助显示元素也会影响渲染负载。
+浏览器实现与GPU驱动差异可能导致不同机器体验差异明显。
+建议在同一台机器上对比不同设置以找到最适合的工作参数组合。
+
+\section{内存与显存的使用建议}
+多帧轨迹会占用CPU内存用于存储坐标序列或缓存结构数据。
+高分辨率导出会临时占用更多显存与帧缓冲资源。
+当您处理超大数据时，建议删除不必要图层并减少同时可见对象。
+当您发现浏览器崩溃或频繁刷新时，通常意味着内存或显存达到上限。
+加载多个超大文件时，可逐个加载并导出结果，再关闭旧图层继续后续工作，避免峰值占用。
+
+\section{面向百万原子的实践建议}
+建议优先使用单视图并关闭不必要叠加层以减小渲染开销。
+建议在探索阶段降低原子半径或关闭键线显示以提升帧率。
+建议分段播放并只在关键区间启用录制功能。
+建议在导出最终图片前再调高导出倍率以避免日常交互卡顿。
+
+\chapter{常见问题与排查}\label{ch:faq}
+\section{加载卡住或加载动画长时间不消失}
+请首先确认文件是否极大并给浏览器足够时间完成解析与重建。
+请打开开发者工具查看是否存在未捕获异常导致状态未复位。
+请尝试减少一次性加载的文件数量并逐个定位问题文件。
+请尝试在不同浏览器中加载同一文件以排除兼容性差异。
+若问题可稳定复现，建议记录文件格式、原子数规模与操作步骤以便进一步排查。
+
+\section{旋转或缩放不流畅}
+请检查是否在交互过程中频繁触发高开销的设置写回与重建。
+请确认是否开启了过多图层或正在播放高帧率多帧轨迹。
+请尝试隐藏部分图层并降低画面复杂度后再进行交互。
+请在性能较弱设备上优先使用单视图并避免高倍率导出。
+
+\section{LAMMPS映射显示不符合预期}
+请确认LAMMPS设置区显示的“当前对应图层”是否为您要修改的图层。
+请确认您已在映射修改后点击“刷新显示”并等待当前图层重建完成。
+请检查文件中typeid列是否存在且值域是否合理并与映射表一致。
+当您同时加载多个LAMMPS模型时，请确认不同图层的映射表内容分别正确。
+当您发现某图层显示被误改时，通常意味着当前编辑图层与预期不一致或未刷新显示。
+
+\section{导出透明PNG仍有大片空白}
+请确认您已启用透明背景，系统会自动裁切空白区域。
+请检查当前视图中是否存在极远处的离散原子导致包围范围变大。
+请尝试隐藏不相关图层并仅导出目标图层以缩小裁切范围。
+当您需要边距用于标注时，建议使用非透明背景导出或在排版软件中手动增加留白。
+
+\section{录制视频无法下载或无法播放}
+请确认浏览器下载权限未被阻止，并留意地址栏的下载提示。
+部分播放器可能不支持WebM格式，建议使用主流播放器或进行转码。
+若录制区域过大或录制时长过长，可尝试降低帧率或缩小区域后重试。
+
+\section{多图层太多导致内存占用过高}
+请隐藏或删除不再需要的图层以释放资源并提升交互流畅性。
+请避免在同一窗口中同时加载多个超大轨迹文件。
+请将数据拆分为多个阶段或多个文件并分批处理以降低峰值占用。
+如需统一配色或外观，先在少量图层上调试好参数，再用“同时编辑所有图层”一键同步，避免对每个图层重复操作造成性能波动。
+
+\end{document}

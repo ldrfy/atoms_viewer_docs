@@ -1,0 +1,56 @@
+[
+    {
+        "fileName": "cnt.xyz.zip",
+        "label": "cnt.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt.xyz.zip",
+        "size": 0.003
+    },
+    {
+        "fileName": "graphene.xyz.zip",
+        "label": "graphene.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/graphene.xyz.zip",
+        "size": 0.008
+    },
+    {
+        "fileName": "cnt_graphene.xyz.zip",
+        "label": "cnt_graphene.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_graphene.xyz.zip",
+        "size": 0.011
+    },
+    {
+        "fileName": "mos2_cnt.xyz.zip",
+        "label": "mos2_cnt.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/mos2_cnt.xyz.zip",
+        "size": 0.054
+    },
+    {
+        "fileName": "cnt.graphene.mos2_cnt.xyz.zip",
+        "label": "cnt.graphene.mos2_cnt.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt.graphene.mos2_cnt.xyz.zip",
+        "size": 0.065
+    },
+    {
+        "fileName": "graphene_traj.xyz.zip",
+        "label": "graphene_traj.xyz.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/graphene_traj.xyz.zip",
+        "size": 5.937
+    },
+    {
+        "fileName": "9JIC.pdb.zip",
+        "label": "9JIC.pdb.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/9JIC.pdb.zip",
+        "size": 0.145
+    },
+    {
+        "fileName": "cnt.lammps.zip",
+        "label": "cnt.lammps.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt.lammps.zip",
+        "size": 0.004
+    },
+    {
+        "fileName": "cnt_breakable.lammpstrj.zip",
+        "label": "cnt_breakable.lammpstrj.zip",
+        "url": "https://raw.githubusercontent.com/ldrfy/atoms_viewer_docs/refs/tags/v1.0.0/data/samples/cnt_breakable.lammpstrj.zip",
+        "size": 3.308
+    }
+]
